@@ -78,6 +78,33 @@ function formatArtistAlbumSongs(artistAlbumSongs) {
   return artistsArray;
 }
 
+function formatAlbumsArtists(albumsArtists) {
+  // Create an object to store artists with albums as an array
+  const albumsWithArtists = {};
+
+  for (const album of albumsArtists) {
+    // If the album is not in the object, add it
+    if (!albumsWithArtists[album.albumID]) {
+      albumsWithArtists[album.albumID] = {
+        albumID: album.albumID,
+        albumName: album.albumName,
+        albumImage: album.albumImage,
+        albumReleaseDate: album.albumReleaseDate,
+        artistNames: [],
+      };
+    }
+    console.log(albumsWithArtists[album.albumID].artistNames);
+    // Add album information to the artist array
+    if (album.albumID !== null) {
+      albumsWithArtists[album.albumID].artistNames.push(album.artistNames);
+    }
+  }
+
+  // Convert the object of artists into an array
+  const albumsArray = Object.values(albumsWithArtists);
+  return albumsArray;
+}
+
 // function formatArtistAlbumSongs(artistAlbumSongsArray) {
 //   const transformedArray = artistAlbumSongsArray.reduce((acc, current) => {
 //     const existingArtist = acc.find(item => item.artistID === current.artistID);
@@ -135,4 +162,4 @@ function formatArtistAlbumSongs(artistAlbumSongs) {
 //   return transformedArray;
 // }
 
-export { formatArtistAlbums, formatArtistAlbumSongs };
+export { formatArtistAlbums, formatArtistAlbumSongs, formatAlbumsArtists };
