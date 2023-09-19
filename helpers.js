@@ -78,7 +78,7 @@ function formatArtistAlbumSongs(artistAlbumSongs) {
   return artistsArray;
 }
 
-function formatAlbumsArtists(albumsArtists) {
+function formatAlbums(albumsArtists) {
   // Create an object to store artists with albums as an array
   const albumsWithArtists = {};
 
@@ -93,10 +93,14 @@ function formatAlbumsArtists(albumsArtists) {
         artistNames: [],
       };
     }
-    console.log(albumsWithArtists[album.albumID].artistNames);
-    // Add album information to the artist array
-    if (album.albumID !== null) {
-      albumsWithArtists[album.albumID].artistNames.push(album.artistNames);
+    // Add artist information to the album array
+    if (album.artistID !== null) {
+      const artist = albumsWithArtists[album.albumID].artistNames.find(
+        a => a.artistID === album.artistID
+      );
+      if (!artist) {
+        albumsWithArtists[album.albumID].artistNames.push(album.artistNames);
+      }
     }
   }
 
@@ -105,61 +109,55 @@ function formatAlbumsArtists(albumsArtists) {
   return albumsArray;
 }
 
-// function formatArtistAlbumSongs(artistAlbumSongsArray) {
-//   const transformedArray = artistAlbumSongsArray.reduce((acc, current) => {
-//     const existingArtist = acc.find(item => item.artistID === current.artistID);
+function formatAlbumSongs(albumSongs) {
+  // Create an object to store artists with albums as an array
+  const albumsWithArtists = {};
 
-//     if (existingArtist) {
-//       const existingAlbum = existingArtist.album.find(
-//         album => album.albumID === current.albumID
-//       );
+  for (const album of albumSongs) {
+    // If the album is not in the object, add it
+    if (!albumsWithArtists[album.albumID]) {
+      albumsWithArtists[album.albumID] = {
+        albumID: album.albumID,
+        albumName: album.albumName,
+        albumImage: album.albumImage,
+        albumReleaseDate: album.albumReleaseDate,
+        artistNames: [],
+        songs: [],
+      };
+    }
 
-//       if (existingAlbum) {
-//         existingAlbum.songs.push({
-//           songID: current.songID,
-//           songName: current.songName,
-//         });
-//       } else {
-//         existingArtist.album.push({
-//           albumID: current.albumID,
-//           albumName: current.albumName,
-//           albumImage: current.albumImage,
-//           albumReleaseDate: current.albumReleaseDate,
-//           songs: [
-//             {
-//               songID: current.songID,
-//               songName: current.songName,
-//             },
-//           ],
-//         });
-//       }
-//     } else {
-//       acc.push({
-//         artistID: current.artistID,
-//         artistName: current.artistName,
-//         artistImage: current.artistImage,
-//         artistDescription: current.artistDescription,
-//         album: [
-//           {
-//             albumID: current.albumID,
-//             albumName: current.albumName,
-//             albumImage: current.albumImage,
-//             albumReleaseDate: current.albumReleaseDate,
-//             songs: [
-//               {
-//                 songID: current.songID,
-//                 songName: current.songName,
-//               },
-//             ],
-//           },
-//         ],
-//       });
-//     }
+    // Add artist information to the album array
+    if (album.artistID !== null) {
+      const artist = albumsWithArtists[album.albumID].artistNames.find(
+        a => a === album.artistNames
+      );
 
-//     return acc;
-//   }, []);
+      if (!artist) {
+        albumsWithArtists[album.albumID].artistNames.push(album.artistNames);
+      }
+    }
 
-//   return transformedArray;
-// }
+    if (album.songID !== null) {
+      const song = albumsWithArtists[album.albumID].songs.find(
+        a => a.songID === album.songID
+      );
+      if (!song) {
+        albumsWithArtists[album.albumID].songs.push({
+          songID: album.songID,
+          songName: album.songName,
+        });
+      }
+    }
+  }
 
-export { formatArtistAlbums, formatArtistAlbumSongs, formatAlbumsArtists };
+  // Convert the object of artists into an array
+  const albumsArray = Object.values(albumsWithArtists);
+  return albumsArray;
+}
+
+export {
+  formatArtistAlbums,
+  formatArtistAlbumSongs,
+  formatAlbums,
+  formatAlbumSongs,
+};
