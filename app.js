@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import { artistsRouter } from "./v1/routes/artists.js";
 
 // Globals
 const port = 3000;
@@ -14,6 +15,8 @@ app.use(express.json()); // parse incomming JSON
 app.get("/", (req, res) => {
   res.json({ message: "Musicbase API" });
 });
+
+app.use("/api/v1/artists", artistsRouter);
 
 app.listen(port, (req, res) => {
   console.log(`The server is running on "${host}:${port}"`);
