@@ -112,7 +112,6 @@ function updateAlbum(req, res) {
         .json({ message: "500 - Internal server error", error: error });
     } else {
       if (results) {
-        console.log(results);
         res.json({ results });
       } else {
         res.status(404).json({ message: "404 - Could not find resource" });
@@ -122,9 +121,24 @@ function updateAlbum(req, res) {
 }
 
 function deleteAlbum(req, res) {
-  res.json({ message: "DELETE /albums/:id not implemented yet!" });
+  const id = req.params.id;
+  const query = /*sql*/ `DELETE FROM albums WHERE albumID=?;`;
+  dbconfig.query(query, [id], (error, results, fields) => {
+    if (error) {
+      res
+        .status(500)
+        .json({ message: "500 - Internal server error", error: error });
+    } else {
+      if (results) {
+        res.json(results);
+      } else {
+        res.status(404).json({ message: "404 - Could not find resource" });
+      }
+    }
+  });
 }
 
+//   res.json({ message: "DELETE /albums/:id not implemented yet!" });
 export default {
   getAllAlbums,
   getAlbumsById,
