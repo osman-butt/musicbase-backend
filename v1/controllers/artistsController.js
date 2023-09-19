@@ -2,7 +2,7 @@ import dbconfig from "../../database.js";
 import { formatArtistAlbums } from "../../helpers.js";
 
 function getAllArtists(req, res) {
-  const query = "SELECT * FROM artists;";
+  const query = /*sql*/ `SELECT * FROM artists;`;
   dbconfig.query(query, (error, results, fields) => {
     if (error) {
       res.status(500).json({ message: "500 - Internal server error" });
@@ -18,7 +18,7 @@ function getAllArtists(req, res) {
 
 function getArtistById(req, res) {
   const id = req.params.id;
-  const query = "SELECT * FROM artists WHERE artistID=?;";
+  const query = /*sql*/ `SELECT * FROM artists WHERE artistID=?;`;
   dbconfig.query(query, [id], (error, results, fields) => {
     if (error) {
       res.status(500).json({ message: "500 - Internal server error" });
@@ -34,8 +34,9 @@ function getArtistById(req, res) {
 
 function getArtistWithAlbums(req, res) {
   const id = req.params.id;
-  const query = `SELECT artists.artistID, artists.artistName, artists.artistImage,artists.artistDescription, 
-    albums.albumID, albums.albumName, albums.albumImage, albums.albumReleaseDate
+  const query = /*sql*/ `
+  SELECT artists.artistID, artists.artistName, artists.artistImage,artists.artistDescription, 
+  albums.albumID, albums.albumName, albums.albumImage, albums.albumReleaseDate
       FROM artists
       LEFT JOIN artists_albums ON artists.artistID = artists_albums.artistID
       LEFT JOIN albums ON artists_albums.albumID = albums.albumID WHERE artists.artistID=?;`;
@@ -53,7 +54,28 @@ function getArtistWithAlbums(req, res) {
 }
 
 function addArtist(req, res) {
-  res.json({ message: "POST /artist not implemented" });
+  const newArtist = req.body;
+  console.log(newArtist);
+  const values = [
+    newArtist.artistName,
+    newArtist.artistImage,
+    newArtist.artistDescription,
+  ];
+  const query = /*sql*/ `
+    INSERT INTO artists (artistName,artistImage,artistDescription)
+    VALUES (?,?,?)`;
+  dbconfig.query(query, values, (error, results, fields) => {
+    console.log(results);
+    if (error) {
+      res.status(500).json({ message: "500 - Internal server error" });
+    } else {
+      if (results) {
+        res.json({ artistID: results.insertId });
+      } else {
+        res.status(404).json({ message: "404 - Could not find resource" });
+      }
+    }
+  });
 }
 
 function updateArtist(req, res) {
