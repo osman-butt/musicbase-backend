@@ -92,7 +92,33 @@ function createAlbum(req, res) {
 }
 
 function updateAlbum(req, res) {
-  res.json({ message: "PUT /albums/:id not implemented yet!" });
+  const id = req.params.id;
+  const updatedAlbum = req.body;
+  const values = [
+    updatedAlbum.albumName,
+    updatedAlbum.albumImage,
+    updatedAlbum.albumReleaseDate,
+    id,
+  ];
+  const query = /*sql*/ `
+        UPDATE albums 
+        SET albumName=?, albumImage=?, albumReleaseDate=? 
+        WHERE albums.albumID=?;
+    `;
+  dbconfig.query(query, values, (error, results, fields) => {
+    if (error) {
+      res
+        .status(500)
+        .json({ message: "500 - Internal server error", error: error });
+    } else {
+      if (results) {
+        console.log(results);
+        res.json({ results });
+      } else {
+        res.status(404).json({ message: "404 - Could not find resource" });
+      }
+    }
+  });
 }
 
 function deleteAlbum(req, res) {
