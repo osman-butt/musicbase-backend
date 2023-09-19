@@ -55,7 +55,6 @@ function getArtistWithAlbums(req, res) {
 
 function addArtist(req, res) {
   const newArtist = req.body;
-  console.log(newArtist);
   const values = [
     newArtist.artistName,
     newArtist.artistImage,
@@ -65,7 +64,6 @@ function addArtist(req, res) {
     INSERT INTO artists (artistName,artistImage,artistDescription)
     VALUES (?,?,?)`;
   dbconfig.query(query, values, (error, results, fields) => {
-    console.log(results);
     if (error) {
       res.status(500).json({ message: "500 - Internal server error" });
     } else {
@@ -79,7 +77,26 @@ function addArtist(req, res) {
 }
 
 function updateArtist(req, res) {
-  res.json({ message: "PUT /artist not implemented" });
+  const id = req.params.id;
+  const updatedArtist = req.body;
+  const values = [
+    updatedArtist.artistName,
+    updatedArtist.artistImage,
+    updatedArtist.artistDescription,
+    id,
+  ];
+  const query = /*sql*/ `UPDATE artists SET artistName=?, artistImage=?, artistDescription=? WHERE artists.artistID=?;`;
+  dbconfig.query(query, values, (error, results, fields) => {
+    if (error) {
+      res.status(500).json({ message: "500 - Internal server error" });
+    } else {
+      if (results) {
+        res.json({ results });
+      } else {
+        res.status(404).json({ message: "404 - Could not find resource" });
+      }
+    }
+  });
 }
 
 function deleteArtist(req, res) {
