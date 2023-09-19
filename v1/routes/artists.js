@@ -5,6 +5,7 @@ const artistsRouter = express.Router();
 
 artistsRouter.get("/", artistsController.getAllArtists);
 artistsRouter.get("/:id", artistsController.getArtistById);
+artistsRouter.get("/:id/albums", artistsController.getArtistWithAlbums);
 artistsRouter.post("/", artistsController.addArtist);
 artistsRouter.put("/:id", artistsController.updateArtist);
 artistsRouter.delete("/:id", artistsController.deleteArtist);
