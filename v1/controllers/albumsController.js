@@ -138,7 +138,6 @@ function deleteAlbum(req, res) {
   });
 }
 
-//   res.json({ message: "DELETE /albums/:id not implemented yet!" });
 export default {
   getAllAlbums,
   getAlbumsById,
