@@ -16,7 +16,19 @@ function getAllArtists(req, res) {
 }
 
 function getArtistById(req, res) {
-  res.json({ message: "GET /artist/:id not implemented" });
+  const id = req.params.id;
+  const query = "SELECT * FROM artists WHERE artistID=?;";
+  dbconfig.query(query, [id], (error, results, fields) => {
+    if (error) {
+      res.status(500).json({ message: "500 - Internal server error" });
+    } else {
+      if (results) {
+        res.json(results);
+      } else {
+        res.status(404).json({ message: "404 - Could not find resource" });
+      }
+    }
+  });
 }
 
 function addArtist(req, res) {
