@@ -1,5 +1,5 @@
 import dbconfig from "../../database.js";
-import { formatArtistAlbums } from "../../helpers.js";
+import { formatArtistAlbums, formatArtistAlbumSongs } from "../../helpers.js";
 
 function getAllArtists(req, res) {
   const query = /*sql*/ `SELECT * FROM artists;`;
@@ -46,6 +46,33 @@ function getArtistWithAlbums(req, res) {
     } else {
       if (results) {
         res.json(formatArtistAlbums(results));
+      } else {
+        res.status(404).json({ message: "404 - Could not find resource" });
+      }
+    }
+  });
+}
+
+function getArtistWithAlbumAndSongs(req, res) {
+  const artistId = req.params.artistId;
+  const albumId = req.params.albumId;
+  const query = /*sql*/ `
+    SELECT artists.*, albums.albumID,albums.albumName,albums.albumImage,albums.albumReleaseDate, songs.*
+        FROM artists
+        LEFT JOIN artists_albums ON artists.artistID = artists_albums.artistID
+        LEFT JOIN albums ON artists_albums.albumID = albums.albumID
+        LEFT JOIN albums_songs ON albums.albumID = albums_songs.albumID
+        LEFT JOIN songs ON albums_songs.songID = songs.songID
+        WHERE artists.artistID=? AND albums.albumID=?`;
+  dbconfig.query(query, [artistId, albumId], (error, results, fields) => {
+    if (error) {
+      res
+        .status(500)
+        .json({ message: "500 - Internal server error", error: error });
+    } else {
+      if (results) {
+        res.json(formatArtistAlbumSongs(results));
+        // res.json(results);
       } else {
         res.status(404).json({ message: "404 - Could not find resource" });
       }
@@ -119,6 +146,7 @@ export default {
   getAllArtists,
   getArtistById,
   getArtistWithAlbums,
+  getArtistWithAlbumAndSongs,
   addArtist,
   updateArtist,
   deleteArtist,
