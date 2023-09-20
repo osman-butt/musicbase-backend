@@ -20,7 +20,7 @@ app.get("/api/v1/", (req, res) => {
 });
 
 app.use("/api/v1/artists", artistsRouter);
-app.use("/api/v1/albums", albumsRouter);
+// app.use("/api/v1/albums", albumsRouter);
 app.use("/api/v1/songs", songsRouter);
 
 app.listen(port, (req, res) => {
