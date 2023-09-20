@@ -7,5 +7,7 @@ const songsRouter = express.Router();
 songsRouter.get("/", songsController.getAllSongs);
 songsRouter.get("/:id", songsController.getSongsById);
 songsRouter.post("/", songsController.addSong);
+songsRouter.put("/:id", songsController.updateSong);
+songsRouter.put("/:id", songsController.deleteSong);
 
 export { songsRouter };

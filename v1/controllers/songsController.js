@@ -54,11 +54,39 @@ function addSong(req, res) {
       }
     }
   });
-  //   res.json({ message: "GET /songs/id is not implemented yet!" });
+}
+
+function updateSong(req, res) {
+  const id = req.params.id;
+  const updatedSong = req.body;
+  const values = [updatedSong.songName, id];
+  const query = /*sql*/ `
+        UPDATE songs SET songName=?
+        WHERE songs.songID=?;
+    `;
+  dbconfig.query(query, values, (error, results, fields) => {
+    if (error) {
+      res.status(500).json({ message: "500 - Internal server error" });
+    } else {
+      if (results) {
+        res.json({ results });
+      } else {
+        res.status(404).json({ message: "404 - Could not find resource" });
+      }
+    }
+  });
+}
+
+function deleteSong(req, res) {
+  res.json({ message: "DELETE /songs/id is not implemented yet!" });
 }
 
 export default {
   getAllSongs,
   getSongsById,
   addSong,
+  updateSong,
+  deleteSong,
 };
+
+//   res.json({ message: "GET /songs/id is not implemented yet!" });
