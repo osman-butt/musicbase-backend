@@ -6,8 +6,8 @@ import { songsRouter } from "./v1/routes/songs.js";
 // import { getArtistName } from "./helpers.js";
 
 // Globals
-const port = 3000;
-const host = "http://localhost";
+const port = process.env.PORT || 3000;
+// const host = "http://localhost";
 
 // Initialize app
 const app = express();
@@ -24,5 +24,5 @@ app.use("/api/v1/albums", albumsRouter);
 app.use("/api/v1/songs", songsRouter);
 
 app.listen(port, (req, res) => {
-  console.log(`The server is running on "${host}:${port}"`);
+  console.log(`The server is running on "http://localhost:${port}"`);
 });
