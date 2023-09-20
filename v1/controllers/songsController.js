@@ -1,99 +1,103 @@
-import { query } from "express";
-import dbconfig from "../../database.js";
+import connection from "../../database.js";
 
-function getAllSongs(req, res) {
-  const query = /*sql*/ `
-        SELECT * FROM songs;
-    `;
-  dbconfig.query(query, (error, results, fields) => {
-    if (error) {
-      res.status(500).json({ message: "500 - Internal server error" });
-    } else {
-      if (results) {
-        res.json(results);
-      } else {
-        res.status(404).json({ message: "404 - Could not find resource" });
-      }
-    }
-  });
+async function getAllSongs(req, res) {
+  const query = /*sql*/ `SELECT * FROM songs;`;
+  try {
+    const [rows, fields] = await connection.execute(query);
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({
+      message: "500 - Internal server error",
+      errorCode: error.errno,
+    });
+  }
 }
 
-function getSongsById(req, res) {
+async function getSongsById(req, res) {
   const id = req.params.id;
-  const query = /*sql*/ `
-        SELECT * FROM songs WHERE songID=?;
-    `;
-  dbconfig.query(query, [id], (error, results, fields) => {
-    if (error) {
-      res.status(500).json({ message: "500 - Internal server error" });
-    } else {
-      if (results) {
-        res.json(results);
-      } else {
-        res.status(404).json({ message: "404 - Could not find resource" });
-      }
-    }
-  });
+  const values = [id];
+  const query = /*sql*/ `SELECT * FROM songs WHERE songID=?;`;
+  try {
+    const [rows, fields] = await connection.execute(query, values);
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({
+      message: "500 - Internal server error",
+      errorCode: error.errno,
+    });
+  }
 }
 
-function addSong(req, res) {
+async function addSong(req, res) {
   const newSong = req.body;
   const values = [newSong.songName];
-  const query = /*sql*/ `
-    INSERT INTO songs (songName)
-    VALUES (?);
-    `;
-  dbconfig.query(query, values, (error, results, fields) => {
-    if (error) {
-      res.status(500).json({ message: "500 - Internal server error" });
-    } else {
-      if (results) {
-        res.json({ artistID: results.insertId });
-      } else {
-        res.status(404).json({ message: "404 - Could not find resource" });
-      }
-    }
-  });
+  const addQuery = /*sql*/ `INSERT INTO songs (songName) VALUES (?);`;
+  const getQuery = /*sql*/ `
+    SELECT * FROM songs WHERE songID=?;
+  `;
+  try {
+    // create row in database
+    const [newRow] = await connection.execute(addQuery, values);
+    // get the new row based on the provided id & return to client
+    const [rows, fields] = await connection.execute(getQuery, [
+      newRow.insertId,
+    ]);
+    res.status(201).json(rows);
+  } catch (error) {
+    res.status(500).json({
+      message: "500 - Internal server error",
+      errorCode: error.errno,
+    });
+  }
 }
 
-function updateSong(req, res) {
+async function updateSong(req, res) {
   const id = req.params.id;
   const updatedSong = req.body;
   const values = [updatedSong.songName, id];
-  const query = /*sql*/ `
-        UPDATE songs SET songName=?
-        WHERE songs.songID=?;
+
+  const updateQuery = /*sql*/ `
+    UPDATE songs SET songName=? WHERE songID=?;
     `;
-  dbconfig.query(query, values, (error, results, fields) => {
-    if (error) {
-      res.status(500).json({ message: "500 - Internal server error" });
-    } else {
-      if (results) {
-        res.json({ results });
-      } else {
-        res.status(404).json({ message: "404 - Could not find resource" });
-      }
-    }
-  });
+  const getQuery = /*sql*/ `
+    SELECT * FROM songs WHERE songID=?;
+  `;
+  try {
+    // update database
+    await connection.execute(updateQuery, values);
+    // get the updated row and send it to client
+    const [rows, fields] = await connection.execute(getQuery, [id]);
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({
+      message: "500 - Internal server error",
+      errorCode: error.errno,
+    });
+  }
 }
 
-function deleteSong(req, res) {
+async function deleteSong(req, res) {
   const id = req.params.id;
-  const query = /*sql*/ `
-        DELETE FROM songs 
+  const values = [id];
+  const deleteQuery = /*sql*/ `
+        DELETE FROM songs
         WHERE songID=?;
     `;
-  dbconfig.query(query, [id], (error, results, fields) => {
-    if (error) {
-      res.status(500).json({ message: "500 - Internal server error" });
-    } else {
-      if (results) {
-        res.json(results);
-      } else {
-        res.status(404).json({ message: "404 - Could not find resource" });
-      }
-    }
-  });
+  const getQuery = /*sql*/ `
+    SELECT * FROM songs;
+  `;
+  try {
+    // delete from database
+    await connection.execute(deleteQuery, values);
+    // get the updated list and send it to client
+    const [rows, fields] = await connection.execute(getQuery, values);
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({
+      message: "500 - Internal server error",
+      errorCode: error.errno,
+    });
+  }
 }
 
 export default {

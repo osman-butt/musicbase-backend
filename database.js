@@ -1,10 +1,10 @@
-import mysql from "mysql2";
+import mysql from "mysql2/promise";
 import "dotenv/config";
 import fs from "fs";
 
 // using the variables from the .env file
 // and creates the connection to database
-const dbconfig = mysql.createConnection({
+const connection = await mysql.createConnection({
   host: process.env.HOST,
   port: process.env.DATABASE_PORT,
   user: process.env.MYSQL_USER,
@@ -15,7 +15,7 @@ const dbconfig = mysql.createConnection({
 
 // Add certificate if present
 if (process.env.MYSQL_CERT) {
-  dbconfig.ssl = { cs: fs.readFileSync("DigiCertGlobalRootCA.crt.pem") };
+  connection.ssl = { cs: fs.readFileSync("DigiCertGlobalRootCA.crt.pem") };
 }
 
-export default dbconfig;
+export default connection;
