@@ -1,4 +1,4 @@
-import dbconfig from "./database.js";
+import connection from "./database.js";
 
 function formatArtistAlbums(artistAlbums) {
   // Create an object to store artists with albums as an array
