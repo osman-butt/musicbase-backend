@@ -42,7 +42,7 @@ async function addSong(req, res) {
     const [rows, fields] = await connection.execute(getQuery, [
       newRow.insertId,
     ]);
-    res.json(rows);
+    res.status(201).json(rows);
   } catch (error) {
     res.status(500).json({
       message: "500 - Internal server error",
