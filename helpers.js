@@ -1,3 +1,5 @@
+import dbconfig from "./database.js";
+
 function formatArtistAlbums(artistAlbums) {
   // Create an object to store artists with albums as an array
   const artistsWithAlbums = {};
@@ -155,9 +157,32 @@ function formatAlbumSongs(albumSongs) {
   return albumsArray;
 }
 
+// async function getArtistName(listOfArtistId) {
+//   console.log("getArtistName()");
+//   const artistsNamesArr = [];
+//   // Loop over array, and add result to artistsNamesArr
+//   for (const artistId of listOfArtistId) {
+//     const query = /*sql*/ `
+//       SELECT artistName FROM artists WHERE artistID=?;
+//     `;
+//     console.log(artistId);
+//     dbconfig.query(query, [artistId], (error, results, fields) => {
+//       if (error) {
+//         // res.status(500).json({ message: "500 - Internal server error" });
+//         console.log({ error: error });
+//       } else {
+//         console.log(results);
+//         artistsNamesArr.push(results);
+//       }
+//     });
+//   }
+//   return artistsNamesArr;
+// }
+
 export {
   formatArtistAlbums,
   formatArtistAlbumSongs,
   formatAlbums,
   formatAlbumSongs,
+  // getArtistName,
 };
