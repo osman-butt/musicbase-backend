@@ -1,56 +1,52 @@
-import dbconfig from "../../database.js";
+import connection from "../../database.js";
 import { formatArtistAlbums, formatArtistAlbumSongs } from "../../helpers.js";
 
-function getAllArtists(req, res) {
+async function getAllArtists(req, res) {
   const query = /*sql*/ `SELECT * FROM artists;`;
-  dbconfig.query(query, (error, results, fields) => {
-    if (error) {
-      res.status(500).json({ message: "500 - Internal server error" });
-    } else {
-      if (results) {
-        res.json(results);
-      } else {
-        res.status(404).json({ message: "404 - Could not find resource" });
-      }
-    }
-  });
+  try {
+    const [rows, fields] = await connection.execute(query);
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({
+      message: "500 - Internal server error",
+      errorCode: error.errno,
+    });
+  }
 }
 
-function getArtistById(req, res) {
+async function getArtistById(req, res) {
   const id = req.params.id;
+  const values = [id];
   const query = /*sql*/ `SELECT * FROM artists WHERE artistID=?;`;
-  dbconfig.query(query, [id], (error, results, fields) => {
-    if (error) {
-      res.status(500).json({ message: "500 - Internal server error" });
-    } else {
-      if (results) {
-        res.json(results);
-      } else {
-        res.status(404).json({ message: "404 - Could not find resource" });
-      }
-    }
-  });
+  try {
+    const [rows, fields] = await connection.execute(query, values);
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({
+      message: "500 - Internal server error",
+      errorCode: error.errno,
+    });
+  }
 }
 
-function getArtistWithAlbums(req, res) {
+async function getArtistWithAlbums(req, res) {
   const id = req.params.id;
+  const values = [id];
   const query = /*sql*/ `
   SELECT artists.artistID, artists.artistName, artists.artistImage,artists.artistDescription, 
   albums.albumID, albums.albumName, albums.albumImage, albums.albumReleaseDate
       FROM artists
       LEFT JOIN artists_albums ON artists.artistID = artists_albums.artistID
       LEFT JOIN albums ON artists_albums.albumID = albums.albumID WHERE artists.artistID=?;`;
-  dbconfig.query(query, [id], (error, results, fields) => {
-    if (error) {
-      res.status(500).json({ message: "500 - Internal server error" });
-    } else {
-      if (results) {
-        res.json(formatArtistAlbums(results));
-      } else {
-        res.status(404).json({ message: "404 - Could not find resource" });
-      }
-    }
-  });
+  try {
+    const [rows, fields] = await connection.execute(query, values);
+    res.json(formatArtistAlbums(rows));
+  } catch (error) {
+    res.status(500).json({
+      message: "500 - Internal server error",
+      errorCode: error.errno,
+    });
+  }
 }
 
 function getArtistWithAlbumAndSongs(req, res) {
@@ -80,30 +76,36 @@ function getArtistWithAlbumAndSongs(req, res) {
   });
 }
 
-function addArtist(req, res) {
+async function addArtist(req, res) {
   const newArtist = req.body;
   const values = [
     newArtist.artistName,
     newArtist.artistImage,
     newArtist.artistDescription,
   ];
-  const query = /*sql*/ `
+  const addQuery = /*sql*/ `
     INSERT INTO artists (artistName,artistImage,artistDescription)
     VALUES (?,?,?)`;
-  dbconfig.query(query, values, (error, results, fields) => {
-    if (error) {
-      res.status(500).json({ message: "500 - Internal server error" });
-    } else {
-      if (results) {
-        res.json({ artistID: results.insertId });
-      } else {
-        res.status(404).json({ message: "404 - Could not find resource" });
-      }
-    }
-  });
+  const getQuery = /*sql*/ `
+    SELECT * FROM artists WHERE artistID=?;
+  `;
+  try {
+    // create row in database
+    const [newRow] = await connection.execute(addQuery, values);
+    // get the new row based on the provided id & return to client
+    const [rows, fields] = await connection.execute(getQuery, [
+      newRow.insertId,
+    ]);
+    res.status(201).json(rows);
+  } catch (error) {
+    res.status(500).json({
+      message: "500 - Internal server error",
+      errorCode: error.errno,
+    });
+  }
 }
 
-function updateArtist(req, res) {
+async function updateArtist(req, res) {
   const id = req.params.id;
   const updatedArtist = req.body;
   const values = [
@@ -112,41 +114,50 @@ function updateArtist(req, res) {
     updatedArtist.artistDescription,
     id,
   ];
-  const query = /*sql*/ `UPDATE artists SET artistName=?, artistImage=?, artistDescription=? WHERE artists.artistID=?;`;
-  dbconfig.query(query, values, (error, results, fields) => {
-    if (error) {
-      res.status(500).json({ message: "500 - Internal server error" });
-    } else {
-      if (results) {
-        res.json({ results });
-      } else {
-        res.status(404).json({ message: "404 - Could not find resource" });
-      }
-    }
-  });
+  const updateQuery = /*sql*/ `UPDATE artists SET artistName=?, artistImage=?, artistDescription=? WHERE artists.artistID=?;`;
+  const getQuery = /*sql*/ `
+    SELECT * FROM artists WHERE artistID=?;
+  `;
+  try {
+    // update database
+    await connection.execute(updateQuery, values);
+    // get the updated row and send it to client
+    const [rows, fields] = await connection.execute(getQuery, [id]);
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({
+      message: "500 - Internal server error",
+      errorCode: error.errno,
+    });
+  }
 }
 
-function deleteArtist(req, res) {
+async function deleteArtist(req, res) {
   const id = req.params.id;
-  const query = /*sql*/ `DELETE FROM artists WHERE artistID=?;`;
-  dbconfig.query(query, [id], (error, results, fields) => {
-    if (error) {
-      res.status(500).json({ message: "500 - Internal server error" });
-    } else {
-      if (results) {
-        res.json(results);
-      } else {
-        res.status(404).json({ message: "404 - Could not find resource" });
-      }
-    }
-  });
+  const values = [id];
+  const deleteQuery = /*sql*/ `DELETE FROM artists WHERE artistID=?;`;
+  const getQuery = /*sql*/ `
+    SELECT * FROM artists;
+  `;
+  try {
+    // delete from database
+    await connection.execute(deleteQuery, values);
+    // get the updated list and send it to client
+    const [rows, fields] = await connection.execute(getQuery, values);
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({
+      message: "500 - Internal server error",
+      errorCode: error.errno,
+    });
+  }
 }
 
 export default {
   getAllArtists,
   getArtistById,
   getArtistWithAlbums,
-  getArtistWithAlbumAndSongs,
+  // getArtistWithAlbumAndSongs,
   addArtist,
   updateArtist,
   deleteArtist,
