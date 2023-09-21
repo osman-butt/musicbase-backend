@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { artistsRouter } from "./v1/routes/artists.js";
+import { artistsRouter } from "./v1/artists/artists.js";
 import { albumsRouter } from "./v1/routes/albums.js";
 import { songsRouter } from "./v1/routes/songs.js";
 // import { getArtistName } from "./helpers.js";

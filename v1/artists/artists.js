@@ -1,5 +1,5 @@
 import express from "express";
-import artistsController from "../controllers/artistsController.js";
+import artistsController from "./artistsController.js";
 
 const artistsRouter = express.Router();
 
@@ -7,10 +7,6 @@ const artistsRouter = express.Router();
 artistsRouter.get("/", artistsController.getAllArtists);
 artistsRouter.get("/:id", artistsController.getArtistById);
 artistsRouter.get("/:id/albums", artistsController.getArtistWithAlbums);
-// artistsRouter.get(
-//   "/:artistId/albums/:albumId/songs",
-//   artistsController.getArtistWithAlbumAndSongs
-// );
 // POST
 artistsRouter.post("/", artistsController.addArtist);
 // PUT
