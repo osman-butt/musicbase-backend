@@ -1,10 +1,9 @@
-import artistModel from "./artistsModel.js";
 import { formatArtistAlbums } from "../../helpers.js";
 import artistsModel from "./artistsModel.js";
 
 async function getAllArtists(req, res) {
   try {
-    const data = await artistModel.getAllArtists();
+    const data = await artistsModel.getAllArtists();
     res.json(data);
   } catch (error) {
     res.status(500).json({
@@ -18,7 +17,7 @@ async function getArtistById(req, res) {
   const id = req.params.id;
   const values = [id];
   try {
-    const data = await artistModel.getArtistById(values);
+    const data = await artistsModel.getArtistById(values);
     res.json(data);
   } catch (error) {
     res.status(500).json({
@@ -32,7 +31,7 @@ async function getArtistWithAlbums(req, res) {
   const id = req.params.id;
   const values = [id];
   try {
-    const data = await artistModel.getArtistWithAlbums(values);
+    const data = await artistsModel.getArtistWithAlbums(values);
     res.json(formatArtistAlbums(data));
   } catch (error) {
     res.status(500).json({
@@ -71,7 +70,7 @@ async function updateArtist(req, res) {
     id,
   ];
   try {
-    await artistModel.updateArtist(values);
+    await artistsModel.updateArtist(values);
     res.status(204).json();
   } catch (error) {
     res.status(500).json({
@@ -85,7 +84,7 @@ async function deleteArtist(req, res) {
   const id = req.params.id;
   const values = [id];
   try {
-    await artistModel.deleteArtist(values);
+    await artistsModel.deleteArtist(values);
     res.status(204).json();
   } catch (error) {
     res.status(500).json({
