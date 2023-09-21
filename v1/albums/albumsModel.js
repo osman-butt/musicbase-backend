@@ -1,33 +1,32 @@
 import connection from "../../database.js";
 
 async function getAllAlbums() {
-  //   const query = /*sql*/ `
-  //     SELECT albums.*, artists.artistName as artistNames, artists.artistID FROM albums
-  //         LEFT JOIN artists_albums on albums.albumID = artists_albums.albumID
-  //         LEFT JOIN artists on artists_albums.artistID = artists.artistID;
-  //   `;
   const query = /*sql*/ `SELECT * FROM albums;`;
   const [rows, fields] = await connection.execute(query);
   return rows;
 }
 
 async function getAlbumsById(values) {
-  //   const query = /*sql*/ `
-  //     SELECT albums.*, artists.artistName as artistNames, artists.artistID FROM albums
-  //         LEFT JOIN artists_albums on albums.albumID = artists_albums.albumID
-  //         LEFT JOIN artists on artists_albums.artistID = artists.artistID
-  //         WHERE albums.albumID=?;
-  //   `;
-  const query = /*sql*/ `SELECT * FROM albums WHERE albumID=?`;
+  const query = /*sql*/ `SELECT * FROM albums WHERE albumID=?;`;
+  const [rows, fields] = await connection.execute(query, values);
+  return rows;
+}
+
+async function getAlbumArtists(values) {
+  const query = /*sql*/ `
+        SELECT artists.*, albums.* FROM albums
+        LEFT JOIN artists_albums ON albums.albumID = artists_albums.albumID
+        LEFT JOIN artists ON artists_albums.artistID = artists.artistID
+        WHERE albums.albumID=?;
+    `;
+
   const [rows, fields] = await connection.execute(query, values);
   return rows;
 }
 
 async function getAlbumSongs(values) {
   const query = /*sql*/ `
-        SELECT albums.*, artists.artistName as artistNames, artists.artistID, songs.* FROM albums
-            LEFT JOIN artists_albums on albums.albumID = artists_albums.albumID
-            LEFT JOIN artists on artists_albums.artistID = artists.artistID
+        SELECT albums.*, songs.* FROM albums
             LEFT JOIN albums_songs on albums.albumID = albums_songs.albumID
             LEFT JOIN songs on albums_songs.songID = songs.songID
             WHERE albums.albumID=?;
@@ -64,6 +63,7 @@ async function deleteAlbum(values) {
 export default {
   getAllAlbums,
   getAlbumsById,
+  getAlbumArtists,
   getAlbumSongs,
   addAlbum,
   updateAlbum,

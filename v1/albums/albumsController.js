@@ -1,10 +1,9 @@
-import { formatAlbums, formatAlbumSongs } from "../../helpers.js";
+import albumsUtils from "./albumsUtils.js";
 import albumsModel from "./albumsModel.js";
 
 async function getAllAlbums(req, res) {
   try {
     const data = await albumsModel.getAllAlbums();
-    // res.json(formatAlbums(data));
     res.json(data);
   } catch (error) {
     res.status(500).json({
@@ -29,13 +28,27 @@ async function getAlbumsById(req, res) {
   }
 }
 
+async function getAlbumArtists(req, res) {
+  const id = req.params.id;
+  const values = [id];
+  try {
+    const data = await albumsModel.getAlbumArtists(values);
+    res.json(albumsUtils.formatAlbumArtists(data));
+  } catch (error) {
+    res.status(500).json({
+      message: "500 - Internal server error",
+      errorCode: error.errno,
+    });
+  }
+}
+
 async function getAlbumSongs(req, res) {
   const id = req.params.id;
   const values = [id];
 
   try {
     const data = await albumsModel.getAlbumSongs(values);
-    res.json(formatAlbumSongs(data));
+    res.json(albumsUtils.formatAlbumSongs(data));
   } catch (error) {
     res.status(500).json({
       message: "500 - Internal server error",
@@ -102,6 +115,7 @@ async function deleteAlbum(req, res) {
 export default {
   getAllAlbums,
   getAlbumsById,
+  getAlbumArtists,
   getAlbumSongs,
   addAlbum,
   updateAlbum,
