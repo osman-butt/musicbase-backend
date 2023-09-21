@@ -1,6 +1,5 @@
-import connection from "../../database.js";
 import artistModel from "./artistsModel.js";
-import { formatArtistAlbums, formatArtistAlbumSongs } from "../../helpers.js";
+import { formatArtistAlbums } from "../../helpers.js";
 import artistsModel from "./artistsModel.js";
 
 async function getAllArtists(req, res) {
@@ -100,7 +99,6 @@ export default {
   getAllArtists,
   getArtistById,
   getArtistWithAlbums,
-  // getArtistWithAlbumAndSongs,
   addArtist,
   updateArtist,
   deleteArtist,
