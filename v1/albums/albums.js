@@ -8,6 +8,7 @@ albumsRouter.get("/", albumsController.getAllAlbums);
 albumsRouter.get("/:id", albumsController.getAlbumsById);
 albumsRouter.get("/:id/artists", albumsController.getAlbumArtists);
 albumsRouter.get("/:id/songs", albumsController.getAlbumSongs);
+albumsRouter.get("/:id/artists/songs", albumsController.getAlbumArtistsSongs);
 // POST
 albumsRouter.post("/", albumsController.addAlbum);
 // PUT

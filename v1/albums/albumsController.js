@@ -57,6 +57,21 @@ async function getAlbumSongs(req, res) {
   }
 }
 
+async function getAlbumArtistsSongs(req, res) {
+  const id = req.params.id;
+  const values = [id, id];
+
+  try {
+    const data = await albumsModel.getAlbumArtistsSongs(values);
+    res.json(albumsUtils.formatAlbumArtistsSongs(data));
+  } catch (error) {
+    res.status(500).json({
+      message: "500 - Internal server error",
+      errorCode: error.errno,
+    });
+  }
+}
+
 async function addAlbum(req, res) {
   const newAlbum = req.body;
   const values = [
@@ -117,6 +132,7 @@ export default {
   getAlbumsById,
   getAlbumArtists,
   getAlbumSongs,
+  getAlbumArtistsSongs,
   addAlbum,
   updateAlbum,
   deleteAlbum,

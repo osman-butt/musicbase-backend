@@ -82,7 +82,83 @@ function formatAlbumSongs(albumSongs) {
   return albumSongsArr;
 }
 
+function formatAlbumArtistsSongs(albumArtistsSongs) {
+  const albumWithArtistsSongs = [];
+  for (const album of albumArtistsSongs) {
+    // If the album is not in the object, add it
+    if (!albumWithArtistsSongs[album.albumID]) {
+      albumWithArtistsSongs[album.albumID] = {
+        albumID: album.albumID,
+        albumName: album.albumName,
+        albumImage: album.albumImage,
+        albumReleaseDate: album.albumReleaseDate,
+        artists: [],
+        songs: [],
+      };
+    }
+
+    // Add song information to the album array
+    if (album.songID !== null) {
+      const song = albumWithArtistsSongs[album.albumID].songs.find(
+        a => a.songID === album.songID
+      );
+      if (!song) {
+        albumWithArtistsSongs[album.albumID].songs.push({
+          songID: album.songID,
+          songName: album.songName,
+          songDuration: album.songDuration,
+          featuredArtists: [],
+        });
+      }
+    }
+
+    // Add artist information to the album array
+    if (album.artistID !== null) {
+      const artist = albumWithArtistsSongs[album.albumID].artists.find(
+        a => a.artistID === album.artistID
+      );
+      if (!artist && album.isPrimary === 1) {
+        albumWithArtistsSongs[album.albumID].artists.push({
+          artistID: album.artistID,
+          artistName: album.artistName,
+          artistImage: album.artistImage,
+          artistDescription: album.artistDescription,
+        });
+      }
+    }
+  }
+
+  // ADDING Featured Artists:
+  const featuredArtists = albumArtistsSongs.filter(
+    album => album.isPrimary === 0
+  );
+
+  console.log("FEAT", featuredArtists);
+  for (const song of albumWithArtistsSongs[albumWithArtistsSongs.length - 1]
+    .songs) {
+    const featArtistsSong = featuredArtists.filter(
+      a => a.songID === song.songID
+    );
+    if (featArtistsSong.length > 0) {
+      for (const artist of featArtistsSong) {
+        console.log(artist.artistName);
+        song.featuredArtists.push({
+          artistID: artist.artistID,
+          artistName: artist.artistName,
+          artistImage: artist.artistImage,
+          artistDescription: artist.artistDescription,
+        });
+      }
+    }
+  }
+
+  // Convert the object of albums into an array
+  const albumSongsArr = Object.values(albumWithArtistsSongs);
+  return albumSongsArr;
+}
+
 export default {
   formatAlbumArtists,
   formatAlbumSongs,
+  formatAlbumArtistsSongs,
 };

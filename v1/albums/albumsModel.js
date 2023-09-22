@@ -35,6 +35,38 @@ async function getAlbumSongs(values) {
   return rows;
 }
 
+async function getAlbumArtistsSongs(values) {
+  // const query = /*sql*/ `
+  //   SELECT albums.*, artists.*, songs.*,artists_songs.isPrimary FROM albums
+  //     LEFT JOIN artists_albums ON albums.albumID = artists_albums.albumID
+  //     LEFT JOIN artists ON artists_albums.artistID = artists.artistID
+  //     LEFT JOIN albums_songs on albums.albumID = albums_songs.albumID
+  //     LEFT JOIN songs on albums_songs.songID = songs.songID
+  //     LEFT JOIN artists_songs ON songs.songID = artists_songs.songID
+  //     WHERE albums.albumID=?;
+  // `;
+
+  const query = /*sql*/ `
+    (SELECT albums.*, songs.*, artists.*, songs.*, artists_songs.isPrimary FROM albums
+      LEFT JOIN artists_albums ON albums.albumID = artists_albums.albumID
+      LEFT JOIN artists ON artists_albums.artistID = artists.artistID
+      LEFT JOIN albums_songs on albums.albumID = albums_songs.albumID
+      LEFT JOIN songs on albums_songs.songID = songs.songID
+      JOIN artists_songs ON songs.songID = artists_songs.songID AND artists.artistID = artists_songs.artistID
+            WHERE albums.albumID=? AND artists_songs.isPrimary=1)
+    UNION
+    (SELECT albums.*, songs.*, artists.*, songs.*, artists_songs.isPrimary FROM songs
+      LEFT JOIN artists_songs ON songs.songID = artists_songs.songID
+      LEFT JOIN artists ON artists_songs.artistID = artists.artistID
+      LEFT JOIN albums_songs ON songs.songID = albums_songs.songID
+      LEFT JOIN albums ON albums_songs.albumID = albums.albumID
+      WHERE albums.albumID=? AND artists_songs.isPrimary=0
+);
+  `;
+  const [rows, fields] = await connection.execute(query, values);
+  return rows;
+}
+
 async function addAlbum(values) {
   const query = /*sql*/ `
       INSERT INTO albums (albumName,albumImage,albumReleaseDate)
@@ -65,6 +97,7 @@ export default {
   getAlbumsById,
   getAlbumArtists,
   getAlbumSongs,
+  getAlbumArtistsSongs,
   addAlbum,
   updateAlbum,
   deleteAlbum,
