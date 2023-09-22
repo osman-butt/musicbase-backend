@@ -52,5 +52,5 @@ jobs:
         with:
           app-name: 'musicbase-app'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_14E5E4B4F8074EDEB553E57404FFFFB9 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_8B6299CDE64746CB9F0FE76392213A71 }}
           package: .
