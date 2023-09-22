@@ -5,6 +5,7 @@ const albumsRouter = express.Router();
 
 // GET
 albumsRouter.get("/", albumsController.getAllAlbums);
+albumsRouter.get("/artists", albumsController.getAllAlbumsArtists);
 albumsRouter.get("/:id", albumsController.getAlbumsById);
 albumsRouter.get("/:id/artists", albumsController.getAlbumArtists);
 albumsRouter.get("/:id/songs", albumsController.getAlbumSongs);

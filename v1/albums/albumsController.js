@@ -13,6 +13,18 @@ async function getAllAlbums(req, res) {
   }
 }
 
+async function getAllAlbumsArtists(req, res) {
+  try {
+    const data = await albumsModel.getAllAlbumsArtists();
+    res.json(albumsUtils.formatAlbumArtists(data));
+  } catch (error) {
+    res.status(500).json({
+      message: "500 - Internal server error",
+      errorCode: error.errno,
+    });
+  }
+}
+
 async function getAlbumsById(req, res) {
   const id = req.params.id;
   const values = [id];
@@ -129,6 +141,7 @@ async function deleteAlbum(req, res) {
 
 export default {
   getAllAlbums,
+  getAllAlbumsArtists,
   getAlbumsById,
   getAlbumArtists,
   getAlbumSongs,

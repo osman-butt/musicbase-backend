@@ -6,6 +6,16 @@ async function getAllAlbums() {
   return rows;
 }
 
+async function getAllAlbumsArtists() {
+  const query = /*sql*/ `
+    SELECT albums.*, artists.* FROM albums
+      LEFT JOIN artists_albums ON albums.albumID = artists_albums.albumID
+      LEFT JOIN artists ON artists_albums.artistID = artists.artistID
+  `;
+  const [rows, fields] = await connection.execute(query);
+  return rows;
+}
+
 async function getAlbumsById(values) {
   const query = /*sql*/ `SELECT * FROM albums WHERE albumID=?;`;
   const [rows, fields] = await connection.execute(query, values);
@@ -94,6 +104,7 @@ async function deleteAlbum(values) {
 
 export default {
   getAllAlbums,
+  getAllAlbumsArtists,
   getAlbumsById,
   getAlbumArtists,
   getAlbumSongs,
