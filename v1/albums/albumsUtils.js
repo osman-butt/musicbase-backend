@@ -133,7 +133,6 @@ function formatAlbumArtistsSongs(albumArtistsSongs) {
     album => album.isPrimary === 0
   );
 
-  console.log("FEAT", featuredArtists);
   for (const song of albumWithArtistsSongs[albumWithArtistsSongs.length - 1]
     .songs) {
     const featArtistsSong = featuredArtists.filter(
@@ -141,7 +140,6 @@ function formatAlbumArtistsSongs(albumArtistsSongs) {
     );
     if (featArtistsSong.length > 0) {
       for (const artist of featArtistsSong) {
-        console.log(artist.artistName);
         song.featuredArtists.push({
           artistID: artist.artistID,
           artistName: artist.artistName,

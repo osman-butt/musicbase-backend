@@ -1,12 +1,12 @@
 import connection from "../../database.js";
 
-async function getAllAlbums() {
+async function getAlbums() {
   const query = /*sql*/ `SELECT * FROM albums;`;
   const [rows, fields] = await connection.execute(query);
   return rows;
 }
 
-async function getAllAlbumsArtists() {
+async function getAlbumsArtists() {
   const query = /*sql*/ `
     SELECT albums.*, artists.* FROM albums
       LEFT JOIN artists_albums ON albums.albumID = artists_albums.albumID
@@ -22,7 +22,7 @@ async function getAlbumsById(values) {
   return rows;
 }
 
-async function getAlbumArtists(values) {
+async function getAlbumsByIdArtists(values) {
   const query = /*sql*/ `
         SELECT artists.*, albums.* FROM albums
         LEFT JOIN artists_albums ON albums.albumID = artists_albums.albumID
@@ -34,7 +34,7 @@ async function getAlbumArtists(values) {
   return rows;
 }
 
-async function getAlbumSongs(values) {
+async function getAlbumsByIdSongs(values) {
   const query = /*sql*/ `
         SELECT albums.*, songs.* FROM albums
             LEFT JOIN albums_songs on albums.albumID = albums_songs.albumID
@@ -45,7 +45,7 @@ async function getAlbumSongs(values) {
   return rows;
 }
 
-async function getAlbumArtistsSongs(values) {
+async function getAlbumsByIdArtistsSongs(values) {
   // const query = /*sql*/ `
   //   SELECT albums.*, artists.*, songs.*,artists_songs.isPrimary FROM albums
   //     LEFT JOIN artists_albums ON albums.albumID = artists_albums.albumID
@@ -103,12 +103,12 @@ async function deleteAlbum(values) {
 }
 
 export default {
-  getAllAlbums,
-  getAllAlbumsArtists,
+  getAlbums,
+  getAlbumsArtists,
   getAlbumsById,
-  getAlbumArtists,
-  getAlbumSongs,
-  getAlbumArtistsSongs,
+  getAlbumsByIdArtists,
+  getAlbumsByIdSongs,
+  getAlbumsByIdArtistsSongs,
   addAlbum,
   updateAlbum,
   deleteAlbum,
