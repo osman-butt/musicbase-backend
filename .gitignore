@@ -4,4 +4,3 @@ node_modules
 *.json
 *.sql
 .env-local
-DigiCertGlobalRootCA.crt.pem
