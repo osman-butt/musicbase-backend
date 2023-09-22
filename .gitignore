@@ -3,3 +3,5 @@ node_modules
 .env
 *.json
 *.sql
+.env-local
+DigiCertGlobalRootCA.crt.pem
