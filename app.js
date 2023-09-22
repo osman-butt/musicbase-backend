@@ -14,7 +14,9 @@ const app = express();
 
 // Middleware
 app.use(express.json()); // parse incomming JSON
+app.use(cors());
 
+// Routes
 app.get("/api/v1/", (req, res) => {
   res.json({ message: "Musicbase API" });
 });
