@@ -2,7 +2,9 @@
 
 endpoint = https://musicbase-app.azurewebsites.net/api/v1
 
-
+* [GET /artists](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#get-artists)
+* [GET /albums/artists](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#get-albumsartists)
+* [GET /songs](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#get-songs-ikke-f%C3%A6rdig-endnu)
 
 ## GET /artists
 Se alle kunstnere (kun kunster info uden sange og album). Kode til at fetche fra frontend app
