@@ -1,11 +1,7 @@
 # API DOCUMENTATION:
 
-## Endpoint
-```
-https://musicbase-app.azurewebsites.net/api/v1
-```
-
 ## Table of contents
+* [Endpoint](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#endpoint)
 * [Overview](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#overview)
   * [Endpoints used in frontend](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#endpoints-used-in-frontend)
   * [Endpoints to create and see all resources](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#endpoints-to-create-and-see-all-resources-at-once)
@@ -22,6 +18,11 @@ https://musicbase-app.azurewebsites.net/api/v1
   * [Example](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#example-3)
 * [POST /albums/artists/songs](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#post-albumsartistssongs)
   * [Example](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#example-4)
+
+## Endpoint
+```
+https://musicbase-app.azurewebsites.net/api/v1
+```
 
 ## Overview
 The guide exclusively showcases the currently utilized endpoints. Please be aware that there exists additional endpoints not covered within this guide.
