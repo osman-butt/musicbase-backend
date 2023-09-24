@@ -1,18 +1,41 @@
 import connection from "../../database.js";
 
-async function getAlbums() {
+async function getAlbums(artistName, albumName, songName) {
   const query = /*sql*/ `SELECT * FROM albums;`;
   const [rows, fields] = await connection.execute(query);
   return rows;
 }
 
-async function getAlbumsArtists() {
-  const query = /*sql*/ `
-    SELECT albums.*, artists.* FROM albums
+async function getAlbumsArtists(artistName, albumName, songName) {
+  let query = /*sql*/ `SELECT DISTINCT albums.*, artists.* FROM albums
       LEFT JOIN artists_albums ON albums.albumID = artists_albums.albumID
-      LEFT JOIN artists ON artists_albums.artistID = artists.artistID
-  `;
-  const [rows, fields] = await connection.execute(query);
+      LEFT JOIN artists ON artists_albums.artistID = artists.artistID`;
+
+  const values = [];
+
+  if (artistName) {
+    query += /*sql*/ ` WHERE albums.albumID IN (
+      SELECT artists_albums.albumID FROM artists
+        LEFT JOIN artists_albums ON artists.artistID = artists_albums.artistID
+        WHERE artists.artistName LIKE ?)`;
+    values.push(`%${artistName}%`);
+  }
+
+  if (songName) {
+    query += /*sql*/ ` 
+      LEFT JOIN albums_songs ON albums.albumID = albums_songs.albumID
+      LEFT JOIN songs ON albums_songs.songID = songs.songID
+      WHERE songs.songName LIKE ?`;
+    values.push(`%${songName}%`);
+  }
+
+  if (albumName) {
+    query += /*sql*/ ` WHERE albums.albumName LIKE ?`;
+    values.push(`%${albumName}%`);
+  }
+
+  query += ";";
+  const [rows, fields] = await connection.execute(query, values);
   return rows;
 }
 
