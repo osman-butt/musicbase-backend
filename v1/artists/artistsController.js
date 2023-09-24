@@ -1,9 +1,11 @@
 import { formatArtistAlbums } from "../../helpers.js";
 import artistsModel from "./artistsModel.js";
 
-async function getAllArtists(req, res) {
+async function getArtists(req, res) {
+  const { artistName, albumName, songName } = req.query;
+  console.log(req.query);
   try {
-    const data = await artistsModel.getAllArtists();
+    const data = await artistsModel.getArtists(artistName, albumName, songName);
     res.json(data);
   } catch (error) {
     res.status(500).json({
@@ -95,7 +97,7 @@ async function deleteArtist(req, res) {
 }
 
 export default {
-  getAllArtists,
+  getArtists,
   getArtistById,
   getArtistWithAlbums,
   addArtist,
