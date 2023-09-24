@@ -2,7 +2,6 @@ node_modules
 *.txt
 .env
 *.json
-*.sql
 .env-local
 .env-azure
 notes
