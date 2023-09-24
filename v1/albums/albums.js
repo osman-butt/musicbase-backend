@@ -19,6 +19,7 @@ albumsRouter.post("/artists/songs", albumsController.addAlbumArtistsSongs);
 
 // PUT
 albumsRouter.put("/:id", albumsController.updateAlbum);
+
 // DELETE
 albumsRouter.delete("/:id", albumsController.deleteAlbum);
 

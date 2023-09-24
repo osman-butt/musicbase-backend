@@ -4,3 +4,5 @@ node_modules
 *.json
 *.sql
 .env-local
+.env-azure
+notes

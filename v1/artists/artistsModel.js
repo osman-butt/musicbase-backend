@@ -1,8 +1,34 @@
 import connection from "../../database.js";
 
-async function getAllArtists() {
-  const query = /*sql*/ `SELECT * FROM artists;`;
-  const [rows, fields] = await connection.execute(query);
+async function getArtists(artistName, albumName, songName) {
+  let query = /*sql*/ `SELECT DISTINCT artists.* FROM artists`;
+
+  const values = [];
+
+  if (artistName) {
+    query += /*sql*/ ` WHERE artists.artistName LIKE ?`;
+    values.push(`%${artistName}%`);
+  }
+
+  if (songName) {
+    query += /*sql*/ ` 
+      LEFT JOIN artists_songs ON artists.artistID = artists_songs.artistID
+      LEFT JOIN songs ON artists_songs.songID = songs.songID
+      WHERE songs.songName LIKE ?`;
+    values.push(`%${songName}%`);
+  }
+
+  if (albumName) {
+    query += /*sql*/ ` 
+    LEFT JOIN artists_albums ON artists.artistID = artists_albums.artistID
+      LEFT JOIN albums ON artists_albums.albumID = albums.albumID
+      WHERE albums.albumName LIKE ?
+    `;
+    values.push(`%${albumName}%`);
+  }
+
+  query += ";";
+  const [rows, fields] = await connection.execute(query, values);
   return rows;
 }
 
@@ -47,7 +73,7 @@ async function deleteArtist(values) {
 }
 
 export default {
-  getAllArtists,
+  getArtists,
   getArtistById,
   getArtistWithAlbums,
   addArtist,
