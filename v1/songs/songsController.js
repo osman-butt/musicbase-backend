@@ -25,7 +25,7 @@ async function getSongsAlbumsArtists(req, res) {
   } catch (error) {
     res.status(500).json({
       message: "500 - Internal server error",
-      errorCode: error,
+      errorCode: error.errno,
     });
   }
 }

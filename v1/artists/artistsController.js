@@ -3,7 +3,6 @@ import artistsModel from "./artistsModel.js";
 
 async function getArtists(req, res) {
   const { artistName, albumName, songName } = req.query;
-  console.log(req.query);
   try {
     const data = await artistsModel.getArtists(artistName, albumName, songName);
     res.json(data);
