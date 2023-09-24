@@ -41,7 +41,7 @@ npm install
 * Create a new database named musicbase.
 * Import the provided SQL dump file into the musicbase database to set up the initial schema and data. The file can be found [here](https://github.com/osman-butt/musicbase-backend/blob/main/sql/musicbasedb.sql) by running the command
 ```bash
-mysql -u username -p musicbase < path/to/musicbasedb.sql
+mysql -u username -p musicbasedb < path/to/musicbasedb.sql
 ```
 * Create a .env file a fill it with your database information
 ```javascript
