@@ -6,7 +6,7 @@ import { songsRouter } from "./v1/songs/songs.js";
 // import { getArtistName } from "./helpers.js";
 
 // Globals
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3000;
 // const host = "http://localhost";
 
 // Initialize app

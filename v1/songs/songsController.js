@@ -1,4 +1,5 @@
 import songsModel from "./songsModel.js";
+import songsUtils from "./songsUtils.js";
 
 async function getSongs(req, res) {
   try {
@@ -8,6 +9,23 @@ async function getSongs(req, res) {
     res.status(500).json({
       message: "500 - Internal server error",
       errorCode: error.errno,
+    });
+  }
+}
+
+async function getSongsAlbumsArtists(req, res) {
+  const { artistName, albumName, songName } = req.query;
+  try {
+    const data = await songsModel.getSongsAlbumsArtists(
+      artistName,
+      albumName,
+      songName
+    );
+    res.json(songsUtils.formatSongsAlbumsArtists(data));
+  } catch (error) {
+    res.status(500).json({
+      message: "500 - Internal server error",
+      errorCode: error,
     });
   }
 }
@@ -71,6 +89,7 @@ async function deleteSong(req, res) {
 
 export default {
   getSongs,
+  getSongsAlbumsArtists,
   getSongsById,
   addSong,
   updateSong,
