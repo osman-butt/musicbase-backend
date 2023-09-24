@@ -10,6 +10,18 @@ https://musicbase-app.azurewebsites.net/api/v1
   * [Endpoints used in frontend](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#endpoints-used-in-frontend)
   * [Endpoints to create and see all resources](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#endpoints-to-create-and-see-all-resources-at-once)
 * [GET /artists](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#get-artists)
+  * [GET /artists search](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#get-artistssearchvaluekeyword)
+  * [Example](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#example)
+* [GET /albums/artists](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#get-albumsartists)
+  * [GET /albums/artists search](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#get-albumsartistssearchvaluekeyword)
+  * [Example](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#example-1)
+* [GET /songs/albums/artists](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#get-songsalbumsartists)
+  * [GET /songs/albums/artists search](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#get-songsalbumsartistssearchvaluekeyword)
+  * [Example](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#example-2)
+* [GET /albums/:albumID/artists/songs](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#get-albumsalbumidartistssongs)
+  * [Example](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#example-3)
+* [POST /albums/artists/songs](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#post-albumsartistssongs)
+  * [Example](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md#example-4)
 
 ## Overview
 The guide exclusively showcases the currently utilized endpoints. Please be aware that there exists additional endpoints not covered within this guide.
