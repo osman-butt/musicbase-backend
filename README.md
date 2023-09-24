@@ -8,6 +8,7 @@ This is the backend repository for MusicBase, a web application for searching ar
 * The frontend respository of this project is managed in a separate repository: [https://github.com/osman-butt/musicbase-frontend](https://github.com/osman-butt/musicbase-frontend).
 * Link to deployed backend [https://musicbase-app.azurewebsites.net/api/v1](https://musicbase-app.azurewebsites.net/api/v1)
 * API documentation can be found [here](https://github.com/osman-butt/musicbase-backend/blob/main/api-docs.md)
+* ER diagram can be found [here](https://github.com/osman-butt/musicbase-backend/blob/main/ER-diagram.pdf)
 
 ## Local Development
 
