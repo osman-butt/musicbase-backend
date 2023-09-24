@@ -3,7 +3,6 @@ import albumsModel from "./albumsModel.js";
 import artistsModel from "../artists/artistsModel.js";
 import songsModel from "../songs/songsModel.js";
 import sharedModel from "../shared/sharedModel.js";
-import { query } from "express";
 
 async function getAlbums(req, res) {
   try {
@@ -26,7 +25,6 @@ async function getAlbumsArtists(req, res) {
       songName
     );
     res.json(albumsUtils.formatAlbumArtists(data));
-    // res.json(data);
   } catch (error) {
     res.status(500).json({
       message: "500 - Internal server error",
