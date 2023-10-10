@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { artistsRouter } from "./api/v2/artists/artists.js";
-// import { albumsRouter } from "./api/v1/albums/albums.js";
+import { albumsRouter } from "./api/v2/albums/albums.js";
 import { songsRouter } from "./api/v2/songs/songs.js";
 // import { getArtistName } from "./helpers.js";
 
@@ -24,7 +24,7 @@ app.get(`/api/${apiVersion}/`, (req, res) => {
 
 // Routes
 app.use(`/api/${apiVersion}/artists`, artistsRouter);
-// app.use(`/api/${apiVersion}/albums`, albumsRouter);
+app.use(`/api/${apiVersion}/albums`, albumsRouter);
 app.use(`/api/${apiVersion}/songs`, songsRouter);
 
 // REDIRECTION TO API
