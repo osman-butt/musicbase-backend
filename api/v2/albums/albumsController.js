@@ -5,26 +5,11 @@ import songsModel from "../songs/songsModel.js";
 import sharedModel from "../shared/sharedModel.js";
 
 async function getAlbums(req, res) {
-  try {
-    const data = await albumsModel.getAlbums();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({
-      message: "500 - Internal server error",
-      errorCode: error.errno,
-    });
-  }
-}
-
-async function getAlbumsArtists(req, res) {
   const { artistName, albumName, songName } = req.query;
   try {
-    const data = await albumsModel.getAlbumsArtists(
-      artistName,
-      albumName,
-      songName
-    );
-    res.json(albumsUtils.formatAlbumArtists(data));
+    const data = await albumsModel.getAlbums(artistName, albumName, songName);
+    // res.json(data);
+    res.json(albumsUtils.formatAlbums(data));
   } catch (error) {
     res.status(500).json({
       message: "500 - Internal server error",
@@ -40,55 +25,6 @@ async function getAlbumsById(req, res) {
     const data = await albumsModel.getAlbumsById(values);
     // res.json(formatAlbums(data));
     res.json(data);
-  } catch (error) {
-    res.status(500).json({
-      message: "500 - Internal server error",
-      errorCode: error.errno,
-    });
-  }
-}
-
-async function getAlbumsByIdArtists(req, res) {
-  const id = req.params.id;
-  const values = [id];
-  try {
-    const data = await albumsModel.getAlbumsByIdArtists(values);
-    res.json(albumsUtils.formatAlbumArtists(data));
-  } catch (error) {
-    res.status(500).json({
-      message: "500 - Internal server error",
-      errorCode: error.errno,
-    });
-  }
-}
-
-async function getAlbumsByIdSongs(req, res) {
-  const id = req.params.id;
-  const values = [id];
-
-  try {
-    const data = await albumsModel.getAlbumsByIdSongs(values);
-    res.json(albumsUtils.formatAlbumSongs(data));
-  } catch (error) {
-    res.status(500).json({
-      message: "500 - Internal server error",
-      errorCode: error.errno,
-    });
-  }
-}
-
-async function getAlbumsByIdArtistsSongs(req, res) {
-  const id = req.params.id;
-  const values = [id, id];
-
-  try {
-    const data = await albumsModel.getAlbumsByIdArtistsSongs(values);
-    // If there is no match with id, return empty array
-    if (data.length > 0) {
-      res.json(albumsUtils.formatAlbumArtistsSongs(data));
-    } else {
-      res.json([]);
-    }
   } catch (error) {
     res.status(500).json({
       message: "500 - Internal server error",
@@ -255,11 +191,7 @@ async function deleteAlbum(req, res) {
 
 export default {
   getAlbums,
-  getAlbumsArtists,
   getAlbumsById,
-  getAlbumsByIdArtists,
-  getAlbumsByIdSongs,
-  getAlbumsByIdArtistsSongs,
   addAlbum,
   addAlbumArtistsSongs,
   updateAlbum,

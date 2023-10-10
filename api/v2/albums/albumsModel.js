@@ -1,20 +1,19 @@
 import connection from "../../../database.js";
 
 async function getAlbums(artistName, albumName, songName) {
-  const query = /*sql*/ `SELECT * FROM albums;`;
-  const [rows, fields] = await connection.execute(query);
-  return rows;
-}
-
-async function getAlbumsArtists(artistName, albumName, songName) {
-  let query = /*sql*/ `SELECT DISTINCT albums.*, artists.* FROM albums
+  let query = /*sql*/ `SELECT *
+FROM (SELECT DISTINCT albums.*, artists.artistID, NULL as songID FROM albums
       LEFT JOIN artists_albums ON albums.albumID = artists_albums.albumID
-      LEFT JOIN artists ON artists_albums.artistID = artists.artistID`;
+      LEFT JOIN artists ON artists_albums.artistID = artists.artistID
+UNION
+SELECT DISTINCT albums.*,null as artistID, songs.songID  FROM songs
+    LEFT JOIN albums_songs ON songs.songID = albums_songs.songID
+    LEFT JOIN albums ON albums_songs.albumID = albums.albumID) AS albums WHERE 1`;
 
   const values = [];
 
   if (artistName) {
-    query += /*sql*/ ` WHERE albums.albumID IN (
+    query += /*sql*/ ` AND albums.albumID IN (
       SELECT artists_albums.albumID FROM artists
         LEFT JOIN artists_albums ON artists.artistID = artists_albums.artistID
         WHERE artists.artistName LIKE ?)`;
@@ -22,15 +21,15 @@ async function getAlbumsArtists(artistName, albumName, songName) {
   }
 
   if (songName) {
-    query += /*sql*/ ` 
-      LEFT JOIN albums_songs ON albums.albumID = albums_songs.albumID
-      LEFT JOIN songs ON albums_songs.songID = songs.songID
-      WHERE songs.songName LIKE ?`;
+    query += /*sql*/ ` AND albums.albumID IN (
+      SELECT albums_songs.albumID FROM songs
+        LEFT JOIN albums_songs ON songs.songID = albums_songs.songID
+        WHERE songs.songName LIKE ?)`;
     values.push(`%${songName}%`);
   }
 
   if (albumName) {
-    query += /*sql*/ ` WHERE albums.albumName LIKE ?`;
+    query += /*sql*/ ` AND albums.albumName LIKE ?`;
     values.push(`%${albumName}%`);
   }
 
@@ -41,61 +40,6 @@ async function getAlbumsArtists(artistName, albumName, songName) {
 
 async function getAlbumsById(values) {
   const query = /*sql*/ `SELECT * FROM albums WHERE albumID=?;`;
-  const [rows, fields] = await connection.execute(query, values);
-  return rows;
-}
-
-async function getAlbumsByIdArtists(values) {
-  const query = /*sql*/ `
-        SELECT artists.*, albums.* FROM albums
-        LEFT JOIN artists_albums ON albums.albumID = artists_albums.albumID
-        LEFT JOIN artists ON artists_albums.artistID = artists.artistID
-        WHERE albums.albumID=?;
-    `;
-
-  const [rows, fields] = await connection.execute(query, values);
-  return rows;
-}
-
-async function getAlbumsByIdSongs(values) {
-  const query = /*sql*/ `
-        SELECT albums.*, songs.* FROM albums
-            LEFT JOIN albums_songs on albums.albumID = albums_songs.albumID
-            LEFT JOIN songs on albums_songs.songID = songs.songID
-            WHERE albums.albumID=?;
-    `;
-  const [rows, fields] = await connection.execute(query, values);
-  return rows;
-}
-
-async function getAlbumsByIdArtistsSongs(values) {
-  // const query = /*sql*/ `
-  //   SELECT albums.*, artists.*, songs.*,artists_songs.isPrimary FROM albums
-  //     LEFT JOIN artists_albums ON albums.albumID = artists_albums.albumID
-  //     LEFT JOIN artists ON artists_albums.artistID = artists.artistID
-  //     LEFT JOIN albums_songs on albums.albumID = albums_songs.albumID
-  //     LEFT JOIN songs on albums_songs.songID = songs.songID
-  //     LEFT JOIN artists_songs ON songs.songID = artists_songs.songID
-  //     WHERE albums.albumID=?;
-  // `;
-
-  const query = /*sql*/ `
-    (SELECT albums.*, songs.*, artists.*, songs.*, artists_songs.isPrimary FROM albums
-      LEFT JOIN artists_albums ON albums.albumID = artists_albums.albumID
-      LEFT JOIN artists ON artists_albums.artistID = artists.artistID
-      LEFT JOIN albums_songs on albums.albumID = albums_songs.albumID
-      LEFT JOIN songs on albums_songs.songID = songs.songID
-      JOIN artists_songs ON songs.songID = artists_songs.songID AND artists.artistID = artists_songs.artistID
-            WHERE albums.albumID=? AND artists_songs.isPrimary=1)
-    UNION
-    (SELECT albums.*, songs.*, artists.*, songs.*, artists_songs.isPrimary FROM songs
-      LEFT JOIN artists_songs ON songs.songID = artists_songs.songID
-      LEFT JOIN artists ON artists_songs.artistID = artists.artistID
-      LEFT JOIN albums_songs ON songs.songID = albums_songs.songID
-      LEFT JOIN albums ON albums_songs.albumID = albums.albumID
-      WHERE albums.albumID=? AND artists_songs.isPrimary=0
-);
-  `;
   const [rows, fields] = await connection.execute(query, values);
   return rows;
 }
@@ -127,11 +71,7 @@ async function deleteAlbum(values) {
 
 export default {
   getAlbums,
-  getAlbumsArtists,
   getAlbumsById,
-  getAlbumsByIdArtists,
-  getAlbumsByIdSongs,
-  getAlbumsByIdArtistsSongs,
   addAlbum,
   updateAlbum,
   deleteAlbum,
