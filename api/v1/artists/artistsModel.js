@@ -1,4 +1,4 @@
-import connection from "../../database.js";
+import connection from "../../../database.js";
 
 async function getArtists(artistName, albumName, songName) {
   let query = /*sql*/ `SELECT DISTINCT artists.* FROM artists`;

@@ -1,4 +1,4 @@
-import connection from "../../database.js";
+import connection from "../../../database.js";
 
 async function getAlbums(artistName, albumName, songName) {
   const query = /*sql*/ `SELECT * FROM albums;`;

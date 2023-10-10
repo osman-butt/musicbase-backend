@@ -1,4 +1,4 @@
-import { formatArtistAlbums } from "../../helpers.js";
+import { formatArtistAlbums } from "../../../helpers.js";
 import artistsModel from "./artistsModel.js";
 
 async function getArtists(req, res) {

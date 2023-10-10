@@ -1,4 +1,4 @@
-import connection from "../../database.js";
+import connection from "../../../database.js";
 
 async function getSongs() {
   const query = /*sql*/ `SELECT * FROM songs;`;
