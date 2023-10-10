@@ -1,64 +1,29 @@
 function formatSongsAlbumsArtists(obj) {
-  const uniqueData = [];
-
-  for (const item of obj) {
-    const existingItem = uniqueData.find(
-      data => data.songID === item.songID && data.albumID === item.albumID
-    );
-
-    if (!existingItem) {
-      const newObject = {
-        songID: item.songID,
-        albumID: item.albumID,
-        songName: item.songName,
-        songDuration: item.songDuration,
-        albumName: item.albumName,
-        albumImage: item.albumImage,
-        albumReleaseDate: item.albumReleaseDate,
+  const uniqueSongs = [];
+  console.log(obj);
+  for (const song of obj) {
+    console.log(song);
+    if (!uniqueSongs[song.songID]) {
+      uniqueSongs[song.songID] = {
+        songID: song.songID,
+        songName: song.songName,
+        songDuration: song.songDuration,
         artists: [], // Initialize an empty array for primary artists
         featuredArtists: [], // Initialize an empty array for featured artists
       };
+    }
 
-      if (item.isPrimary === 1) {
-        newObject.artists.push({
-          artistID: item.artistID,
-          isPrimary: item.isPrimary,
-          artistName: item.artistName,
-          artistImage: item.artistImage,
-          artistDescription: item.artistDescription,
-        });
+    // Add artist info
+    if (song.artistID !== null) {
+      if (song.isPrimary === 1) {
+        uniqueSongs[song.songID].artists.push(song.artistID);
       } else {
-        newObject.featuredArtists.push({
-          artistID: item.artistID,
-          isPrimary: item.isPrimary,
-          artistName: item.artistName,
-          artistImage: item.artistImage,
-          artistDescription: item.artistDescription,
-        });
-      }
-
-      uniqueData.push(newObject);
-    } else {
-      if (item.isPrimary === 1) {
-        existingItem.artists.push({
-          artistID: item.artistID,
-          isPrimary: item.isPrimary,
-          artistName: item.artistName,
-          artistImage: item.artistImage,
-          artistDescription: item.artistDescription,
-        });
-      } else {
-        existingItem.featuredArtists.push({
-          artistID: item.artistID,
-          isPrimary: item.isPrimary,
-          artistName: item.artistName,
-          artistImage: item.artistImage,
-          artistDescription: item.artistDescription,
-        });
+        uniqueSongs[song.songID].featuredArtists.push(song.artistID);
       }
     }
   }
-  return uniqueData;
+  const songsArr = Object.values(uniqueSongs);
+  return songsArr;
 }
 
 export default { formatSongsAlbumsArtists };

@@ -2,9 +2,11 @@ import songsModel from "./songsModel.js";
 import songsUtils from "./songsUtils.js";
 
 async function getSongs(req, res) {
+  const { artistName, albumName, songName } = req.query;
   try {
-    const data = await songsModel.getSongs();
-    res.json(data);
+    const data = await songsModel.getSongs(artistName, albumName, songName);
+    // res.json(data);
+    res.json(songsUtils.formatSongsAlbumsArtists(data));
   } catch (error) {
     res.status(500).json({
       message: "500 - Internal server error",
@@ -14,15 +16,20 @@ async function getSongs(req, res) {
 }
 
 async function getSongsById(req, res) {
+  const { artistName, albumName, songName } = req.query;
   const id = req.params.id;
-  const values = [id];
   try {
-    const data = await songsModel.getSongsById(values);
-    res.json(data);
+    const data = await songsModel.getSongsById(
+      artistName,
+      albumName,
+      songName,
+      id
+    );
+    res.json(songsUtils.formatSongsAlbumsArtists(data));
   } catch (error) {
     res.status(500).json({
       message: "500 - Internal server error",
-      errorCode: error.errno,
+      errorCode: error, //.errno,
     });
   }
 }
