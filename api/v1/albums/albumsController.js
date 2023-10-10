@@ -1,6 +1,6 @@
 import albumsUtils from "./albumsUtils.js";
 import albumsModel from "./albumsModel.js";
-import artistsModel from "../../v1/artists/artistsModel.js";
+import artistsModel from "../artists/artistsModel.js";
 import songsModel from "../songs/songsModel.js";
 import sharedModel from "../shared/sharedModel.js";
 
