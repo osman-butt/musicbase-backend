@@ -34,7 +34,6 @@ async function addArtist(req, res) {
     newArtist.artistImage,
     newArtist.artistDescription,
   ];
-  console.log(values);
   try {
     const data = await artistsModel.addArtist(values);
     res.status(201).json({ artistID: data.insertId });

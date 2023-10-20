@@ -1,8 +1,6 @@
 function formatSongsAlbumsArtists(obj) {
   const uniqueSongs = [];
-  console.log(obj);
   for (const song of obj) {
-    console.log(song);
     if (!uniqueSongs[song.songID]) {
       uniqueSongs[song.songID] = {
         songID: song.songID,

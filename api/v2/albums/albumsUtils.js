@@ -159,25 +159,28 @@ function formatAlbums(albums) {
   const uniqueAlbums = [];
 
   for (const album of albums) {
-    if (!uniqueAlbums[album.albumID]) {
-      uniqueAlbums[album.albumID] = {
-        albumID: album.albumID,
-        albumName: album.albumName,
-        albumImage: album.albumImage,
-        albumReleaseDate: album.albumReleaseDate,
-        artists: [],
-        songs: [],
-      };
-    }
+    // if (album.albumID === null) console.log(album.albumID);
+    if (album.albumID !== null) {
+      if (!uniqueAlbums[album.albumID]) {
+        uniqueAlbums[album.albumID] = {
+          albumID: album.albumID,
+          albumName: album.albumName,
+          albumImage: album.albumImage,
+          albumReleaseDate: album.albumReleaseDate,
+          artists: [],
+          songs: [],
+        };
+      }
 
-    // Add Song info
-    if (album.songID !== null) {
-      uniqueAlbums[album.albumID].songs.push(album.songID);
-    }
+      // Add Song info
+      if (album.songID !== null) {
+        uniqueAlbums[album.albumID].songs.push(album.songID);
+      }
 
-    // Add Artist info
-    if (album.artistID !== null) {
-      uniqueAlbums[album.albumID].artists.push(album.artistID);
+      // Add Artist info
+      if (album.artistID !== null) {
+        uniqueAlbums[album.albumID].artists.push(album.artistID);
+      }
     }
   }
   const albumArr = Object.values(uniqueAlbums);
