@@ -1,3 +1,4 @@
+import sharedModel from "../shared/sharedModel.js";
 import songsModel from "./songsModel.js";
 import songsUtils from "./songsUtils.js";
 
@@ -37,8 +38,16 @@ async function getSongsById(req, res) {
 async function addSong(req, res) {
   const newSong = req.body;
   const values = [newSong.songName, newSong.songDuration];
+  const artistIds = newSong.artists;
   try {
     const data = await songsModel.addSong(values);
+    const songId = data.insertId;
+    // ADD TO JUNCTION TABLE artists_albums (LOOP)
+    for (const artistId of artistIds) {
+      // ADD TO JUNCTION TABLE QUERY
+      const junctionValues = [artistId, songId, 1];
+      await sharedModel.addJoinArtistSong(junctionValues);
+    }
     res.status(201).json({ songID: data.insertId });
   } catch (error) {
     res.status(500).json({
@@ -67,6 +76,10 @@ async function deleteSong(req, res) {
   const id = req.params.id;
   const values = [id];
   try {
+    // Delete from junction tables
+    await sharedModel.deleteJoinArtistSong(values);
+    await sharedModel.deleteJoinSongAlbum(values);
+    // Delete song
     await songsModel.deleteSong(values);
     res.status(204).json();
   } catch (error) {
