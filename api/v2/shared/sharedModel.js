@@ -9,6 +9,12 @@ async function addJoinArtistAlbum(values) {
   return rows;
 }
 
+async function deleteJoinArtistAlbum(values) {
+  const query = /*sql*/ `DELETE FROM artists_albums WHERE albumID=?;`;
+  const [rows] = await connection.execute(query, values);
+  return rows;
+}
+
 async function addJoinArtistSong(values) {
   const query = /*sql*/ `
       INSERT INTO artists_songs (artistID, songID, isPrimary)
@@ -27,8 +33,16 @@ async function addJoinAlbumSong(values) {
   return rows;
 }
 
+async function deleteJoinAlbumSong(values) {
+  const query = /*sql*/ `DELETE FROM albums_songs WHERE albumID=?;`;
+  const [rows] = await connection.execute(query, values);
+  return rows;
+}
+
 export default {
   addJoinArtistAlbum,
+  deleteJoinArtistAlbum,
   addJoinArtistSong,
   addJoinAlbumSong,
+  deleteJoinAlbumSong,
 };
