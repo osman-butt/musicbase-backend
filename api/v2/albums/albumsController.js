@@ -172,16 +172,37 @@ async function addAlbumArtistsSongs(req, res) {
 }
 
 async function updateAlbum(req, res) {
-  const id = req.params.id;
+  const albumId = req.params.id;
   const updatedAlbum = req.body;
   const values = [
     updatedAlbum.albumName,
     updatedAlbum.albumImage,
     updatedAlbum.albumReleaseDate,
-    id,
+    albumId,
   ];
+  const artistIds = updatedAlbum.artists;
+  const songIds = updatedAlbum.songs;
 
   try {
+    await sharedModel.deleteJoinAlbumSong([albumId]);
+    await sharedModel.deleteJoinArtistAlbum([albumId]);
+    if (artistIds.length > 0) {
+      // ADD TO JUNCTION TABLE artists_albums (LOOP)
+      for (const artistId of artistIds) {
+        // ADD TO JUNCTION TABLE QUERY
+        const junctionValues = [artistId, albumId];
+        await sharedModel.addJoinArtistAlbum(junctionValues);
+      }
+    }
+
+    if (songIds.length > 0) {
+      // ADD TO JUNCTION TABLE albums_songs (LOOP)
+      for (const songId of songIds) {
+        // ADD TO JUNCTION TABLE QUERY
+        const junctionValues = [albumId, songId];
+        await sharedModel.addJoinAlbumSong(junctionValues);
+      }
+    }
     await albumsModel.updateAlbum(values);
     res.status(204).json();
   } catch (error) {
