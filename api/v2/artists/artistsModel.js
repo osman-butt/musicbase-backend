@@ -1,28 +1,26 @@
-import connection from "../../database.js";
+import connection from "../../../database.js";
 
 async function getArtists(artistName, albumName, songName) {
-  let query = /*sql*/ `SELECT DISTINCT artists.* FROM artists`;
+  let query = /*sql*/ `SELECT DISTINCT artists.* FROM artists 
+      LEFT JOIN artists_songs ON artists.artistID = artists_songs.artistID
+      LEFT JOIN songs ON artists_songs.songID = songs.songID 
+      LEFT JOIN artists_albums ON artists.artistID = artists_albums.artistID
+      LEFT JOIN albums ON artists_albums.albumID = albums.albumID WHERE 1`;
 
   const values = [];
 
   if (artistName) {
-    query += /*sql*/ ` WHERE artists.artistName LIKE ?`;
+    query += /*sql*/ ` AND artists.artistName LIKE ?`;
     values.push(`%${artistName}%`);
   }
 
   if (songName) {
-    query += /*sql*/ ` 
-      LEFT JOIN artists_songs ON artists.artistID = artists_songs.artistID
-      LEFT JOIN songs ON artists_songs.songID = songs.songID
-      WHERE songs.songName LIKE ?`;
+    query += /*sql*/ ` AND songs.songName LIKE ?`;
     values.push(`%${songName}%`);
   }
 
   if (albumName) {
-    query += /*sql*/ ` 
-    LEFT JOIN artists_albums ON artists.artistID = artists_albums.artistID
-      LEFT JOIN albums ON artists_albums.albumID = albums.albumID
-      WHERE albums.albumName LIKE ?
+    query += /*sql*/ ` AND albums.albumName LIKE ?
     `;
     values.push(`%${albumName}%`);
   }
@@ -34,18 +32,6 @@ async function getArtists(artistName, albumName, songName) {
 
 async function getArtistById(values) {
   const query = /*sql*/ `SELECT * FROM artists WHERE artistID=?;`;
-  const [rows, fields] = await connection.execute(query, values);
-  return rows;
-}
-
-async function getArtistWithAlbums(values) {
-  const query = /*sql*/ `
-  SELECT artists.artistID, artists.artistName, artists.artistImage,artists.artistDescription, 
-  albums.albumID, albums.albumName, albums.albumImage, albums.albumReleaseDate
-      FROM artists
-      LEFT JOIN artists_albums ON artists.artistID = artists_albums.artistID
-      LEFT JOIN albums ON artists_albums.albumID = albums.albumID WHERE artists.artistID=?;`;
-
   const [rows, fields] = await connection.execute(query, values);
   return rows;
 }
@@ -75,7 +61,6 @@ async function deleteArtist(values) {
 export default {
   getArtists,
   getArtistById,
-  getArtistWithAlbums,
   addArtist,
   updateArtist,
   deleteArtist,

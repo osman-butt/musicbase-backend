@@ -1,0 +1,16 @@
+import express from "express";
+import artistsController from "./artistsController.js";
+
+const artistsRouter = express.Router();
+
+// GET
+artistsRouter.get("/", artistsController.getArtists);
+artistsRouter.get("/:id", artistsController.getArtistById);
+// POST
+artistsRouter.post("/", artistsController.addArtist);
+// PUT
+artistsRouter.put("/:id", artistsController.updateArtist);
+// DELETE
+artistsRouter.delete("/:id", artistsController.deleteArtist);
+
+export { artistsRouter };
